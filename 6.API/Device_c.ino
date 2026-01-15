@@ -1,40 +1,46 @@
-#include <Arduino_RouterBridge.h>
+// UPLOAD THIS TO BOARD B (The Device being tested)
 
 void setup() {
-  Bridge.begin();
+  // Initialize the communication port (Must match Board A baud rate)
   Serial1.begin(115200); 
-  Bridge.provide("uart_write", uartWrite);
-  Bridge.provide("uart_read", uartRead);
-  Bridge.provide("uart_writeread", uartWriteRead); 
+  
+  // Initialize USB serial for debugging (optional, to see what's happening on PC)
+  Serial.begin(9600);
+  
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
- 
-}
-
-void uartWrite(String data) {
-  Serial1.print(data);
-}
-
-String uartRead(String ignored) {
+  // --- LOGIC 1: Handle Incoming Data (Supports 'write' and 'write_read') ---
   if (Serial1.available()) {
-    return Serial1.readString();
-  }
-  return "Nothing recived";
-}
+    // Read the incoming command from Board A
+    String incoming = Serial1.readString();
+    
+    // Debug output to PC
+    Serial.print("Received from Board A: ");
+    Serial.println(incoming);
 
-String uartWriteRead(String command) {
-  while(Serial1.available()) { Serial1.read(); }
+    // TEST CASE A: Response Test (for uart_writeread)
+    // If Board A says "PING", we must reply "PONG" immediately
+    if (incoming.indexOf("PING") >= 0) {
+       Serial1.print("PONG");
+    }
 
-  Serial1.print(command);
-
-  unsigned long startTime = millis();
-  while (Serial1.available() == 0) {
-    if (millis() - startTime > 1000) {
-      return "ERROR: TIMEOUT";
+    // TEST CASE B: Action Test (for uart_write)
+    // If Board A says "LED_ON", we verify by turning on the light
+    if (incoming.indexOf("LED_ON") >= 0) {
+       digitalWrite(LED_BUILTIN, HIGH);
+    }
+    if (incoming.indexOf("LED_OFF") >= 0) {
+       digitalWrite(LED_BUILTIN, LOW);
     }
   }
-  
-  String response = Serial1.readString();
-  return response;
+
+  // --- LOGIC 2: Autonomous Broadcast (Supports 'uart_read') ---
+  // Send data periodically so Board A has something to read if it checks
+  static unsigned long lastTime = 0;
+  if (millis() - lastTime > 3000) { // Every 3 seconds
+    Serial1.print("Heartbeat: Board B is alive");
+    lastTime = millis();
+  }
 }
