@@ -6,9 +6,9 @@ next_state = True
 def perform_led_task():
     global next_state
     if next_state:
-        command_str = "\x00"
-    else:
         command_str = "\x01"
+    else:
+        command_str = "\x00"
 
     reply_str = device.write_read(command_str).strip()
     print(f"{reply_str}")
