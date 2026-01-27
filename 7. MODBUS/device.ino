@@ -23,9 +23,9 @@ namespace SimState {
 
 // =================================================================================
 // 2. HELPER FUNCTIONS (CRC & Endianness)
-// =================================================================================
+// ================================================================================
 
-//[cite_start]// CRC16 (Poly 0xA001) - Matches Master Logic [cite: 555-584]
+// CRC16 (Poly 0xA001) - Matches Master Logic [cite: 555-584]
 uint16_t calculateCRC(const uint8_t* buffer, size_t length) {
     uint16_t crc = 0xFFFF;
     for (size_t i = 0; i < length; i++) {
@@ -42,7 +42,7 @@ uint16_t calculateCRC(const uint8_t* buffer, size_t length) {
     return crc;
 }
 
-//[cite_start]// Convert Float to Big-Endian Bytes (ABCD) [cite: 48-49]
+// Convert Float to Big-Endian Bytes (ABCD) [cite: 48-49]
 void floatToBytes(float val, uint8_t* dest) {
     union { float f; uint32_t i; } u;
     u.f = val;
