@@ -28,7 +28,7 @@ class IsunaNativeAdapter:
             
         self.lib = ctypes.CDLL(lib_path)
 
-        # 2. Define Argument and Return types for safety
+        # 2. Define Argument and Return types for safety.
         self.lib.isuna_read_float.argtypes = [ctypes.c_int, ctypes.c_int]
         self.lib.isuna_read_float.restype = ctypes.c_float
 
