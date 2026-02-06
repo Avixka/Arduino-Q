@@ -5,7 +5,7 @@ ARCHITECTURE:
   - IsunaConfig: Static configuration constants
   - IsunaRpcAdapter: Wrapper for the low-level Bridge calls
   - IsunaDevice: High-level business logic (The "Device Object")
-  - App Context: Manages the main loop
+  - App Context: Manages the main loop.
 """
 
 import time
